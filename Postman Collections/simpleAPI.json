@@ -1,0 +1,1440 @@
+{
+	"info": {
+		"_postman_id": "37cd50a4-f086-4841-ac06-65efdccc7a14",
+		"name": "Cart",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get All Cart Items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3db03009-f0f9-498d-8ccc-c8be62dc9268",
+						"exec": [
+							"const jsonRes = pm.response.json();\r",
+							"\r",
+							"// validate empty body or not\r",
+							"pm.test('TC_A_01 : Response body is not empty', function () {\r",
+							"    pm.expect(jsonRes).to.not.be.empty;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cd91d68b-9ef2-4259-b175-3850aacba51b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "2e888077-ff74-4035-9d85-3901e8494bfa",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{baseURL}}carts"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single Cart Item",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a0c872d7-8a1b-4c5b-91ff-b3b09e15ba07",
+						"exec": [
+							"const expected_schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"id\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"userId\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"date\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"products\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": {\r",
+							"        \"type\": \"object\",\r",
+							"        \"properties\": {\r",
+							"          \"productId\": {\r",
+							"            \"type\": \"integer\"\r",
+							"          },\r",
+							"          \"quantity\": {\r",
+							"            \"type\": \"integer\"\r",
+							"          }\r",
+							"        },\r",
+							"        \"required\": [\r",
+							"          \"productId\",\r",
+							"          \"quantity\"\r",
+							"        ]\r",
+							"      }\r",
+							"    },\r",
+							"    \"__v\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"id\",\r",
+							"    \"userId\",\r",
+							"    \"date\",\r",
+							"    \"products\",\r",
+							"    \"__v\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"const jsonRes = pm.response.json();\r",
+							"\r",
+							"// validate response code\r",
+							"pm.test('TC_B_01 : Status code is 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// validate empty body or not\r",
+							"pm.test('TC_B_02 : Response body is not empty', function () {\r",
+							"    pm.expect(jsonRes).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Validate json Body wwith Schema\r",
+							"pm.test(\"TC_B_03 : Validate json Body with Schema\", () => {\r",
+							"     pm.response.to.have.jsonSchema(expected_schema);\r",
+							"});\r",
+							"\r",
+							"// validating actual ID vs expected ID\r",
+							"const expectedCartID = Number(pm.collectionVariables.get(\"cartID\"));\r",
+							"\r",
+							"pm.test(\"TC_B_04 : Validate cart ID\", () => {\r",
+							"    const actualCartId = jsonRes.id;\r",
+							"    pm.expect(actualCartId).to.equal(expectedCartID);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d111821f-144b-43ee-a27e-e7465ba7b780",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "f944fb75-5eec-4e6a-a435-b44e19557ac2",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{baseURL}}carts/{{cartID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Limited Cart Items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3ce29d41-59b9-4f0e-92b2-64c2775863bc",
+						"exec": [
+							"const expected_schema = {\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"id\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"userId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"date\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"products\": {\r",
+							"          \"type\": \"array\",\r",
+							"          \"items\": [\r",
+							"            {\r",
+							"              \"type\": \"object\",\r",
+							"              \"properties\": {\r",
+							"                \"productId\": {\r",
+							"                  \"type\": \"integer\"\r",
+							"                },\r",
+							"                \"quantity\": {\r",
+							"                  \"type\": \"integer\"\r",
+							"                }\r",
+							"              },\r",
+							"              \"required\": [\r",
+							"                \"productId\",\r",
+							"                \"quantity\"\r",
+							"              ]\r",
+							"            },\r",
+							"            {\r",
+							"              \"type\": \"object\",\r",
+							"              \"properties\": {\r",
+							"                \"productId\": {\r",
+							"                  \"type\": \"integer\"\r",
+							"                },\r",
+							"                \"quantity\": {\r",
+							"                  \"type\": \"integer\"\r",
+							"                }\r",
+							"              },\r",
+							"              \"required\": [\r",
+							"                \"productId\",\r",
+							"                \"quantity\"\r",
+							"              ]\r",
+							"            },\r",
+							"            {\r",
+							"              \"type\": \"object\",\r",
+							"              \"properties\": {\r",
+							"                \"productId\": {\r",
+							"                  \"type\": \"integer\"\r",
+							"                },\r",
+							"                \"quantity\": {\r",
+							"                  \"type\": \"integer\"\r",
+							"                }\r",
+							"              },\r",
+							"              \"required\": [\r",
+							"                \"productId\",\r",
+							"                \"quantity\"\r",
+							"              ]\r",
+							"            }\r",
+							"          ]\r",
+							"        },\r",
+							"        \"__v\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"id\",\r",
+							"        \"userId\",\r",
+							"        \"date\",\r",
+							"        \"products\",\r",
+							"        \"__v\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"const jsonRes = pm.response.json();\r",
+							"\r",
+							"// validate response code\r",
+							"pm.test('TC_C_01 : Status code is 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// validate empty body or not\r",
+							"pm.test('TC_C_02 : Response body is not empty', function () {\r",
+							"    pm.expect(jsonRes).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Validate json Body wwith Schema\r",
+							"pm.test(\"TC_C_03 : Validate json Body with Schema\", () => {\r",
+							"     pm.response.to.have.jsonSchema(expected_schema);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// validate no of items in products array\r",
+							"const expectedLimit = Number(pm.collectionVariables.get(\"limitProvided\"));\r",
+							"\r",
+							"pm.test(`TC_C_04 : Number of items in products array is ${expectedLimit}`, () => {\r",
+							"    pm.expect(jsonRes.length).to.eql(expectedLimit);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e2a95374-5ca4-45b3-a1c9-6793ffba831e",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "129e941b-3711-45f4-8c5f-ee49a811c89c",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}carts?limit={{limitProvided}}",
+					"host": [
+						"{{baseURL}}carts"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "{{limitProvided}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Sorted Cart Items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dfb66bb0-2c99-4a6e-b149-d59860776ef7",
+						"exec": [
+							"const expected_schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"id\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"userId\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"date\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"products\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"            \"productId\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            },\r",
+							"            \"quantity\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            }\r",
+							"          },\r",
+							"          \"required\": [\r",
+							"            \"productId\",\r",
+							"            \"quantity\"\r",
+							"          ]\r",
+							"        }\r",
+							"      ]\r",
+							"    },\r",
+							"    \"__v\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"id\",\r",
+							"    \"userId\",\r",
+							"    \"date\",\r",
+							"    \"products\",\r",
+							"    \"__v\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"// validate response code\r",
+							"pm.test('TC_D_01 : Status code is 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const jsonRes = pm.response.json();\r",
+							"\r",
+							"// validate empty body or not\r",
+							"pm.test('TC_D_02 : Response body is not empty', function () {\r",
+							"    pm.expect(jsonRes).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Validate json Body with Schema\r",
+							"var valid_body = true;\r",
+							"jsonRes.forEach((order) => {\r",
+							"    try {\r",
+							"        pm.expect(order).to.have.jsonSchema(expected_schema);\r",
+							"    } catch (error) {\r",
+							"        valid_body = false;\r",
+							"        console.error(`Order validation failed: ${error.message}`);\r",
+							"        return;\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"TC_D_03 : Validate json Body with Schema\", () => {\r",
+							"    pm.expect(valid_body).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// const cart1 = jsonRes[0];\r",
+							"// console.log(cart1);\r",
+							"\r",
+							"\r",
+							"// validating descending order\r",
+							"var valid_order = true;\r",
+							"\r",
+							"for (let i = 0; i < jsonRes.length - 1; i++) {\r",
+							"    const order = jsonRes[i];\r",
+							"    const nextOrder = jsonRes[i+1];\r",
+							"\r",
+							"    if (order.id < nextOrder.id) {\r",
+							"        valid_order = false;\r",
+							"        return;\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"if(pm.collectionVariables.get(\"sortOrder\") == \"desc\" ){\r",
+							"    pm.test(\"TC_D_04 : Validate Descending order of body\", () => {\r",
+							"        pm.expect(valid_order).to.be.true;\r",
+							"    });\r",
+							"};\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d024fdf2-3b6e-4bc0-90b8-0dbb9b00b549",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "d4bc275f-201c-472b-913e-be5023fb6312",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}carts?sort={{sortOrder}}",
+					"host": [
+						"{{baseURL}}carts"
+					],
+					"query": [
+						{
+							"key": "sort",
+							"value": "{{sortOrder}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Cart Items in Date Range",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6ccfa8ad-1c3c-4627-8745-e873a4e4e231",
+						"exec": [
+							"const expected_schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"id\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"userId\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"date\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"products\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"            \"productId\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            },\r",
+							"            \"quantity\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            }\r",
+							"          },\r",
+							"          \"required\": [\r",
+							"            \"productId\",\r",
+							"            \"quantity\"\r",
+							"          ]\r",
+							"        }\r",
+							"      ]\r",
+							"    },\r",
+							"    \"__v\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"id\",\r",
+							"    \"userId\",\r",
+							"    \"date\",\r",
+							"    \"products\",\r",
+							"    \"__v\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"// validate response code\r",
+							"pm.test('TC_E_01 : Status code is 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const jsonRes = pm.response.json();\r",
+							"\r",
+							"// validate empty body or not\r",
+							"pm.test('TC_E_02 : Response body is not empty', function () {\r",
+							"    pm.expect(jsonRes).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"// Validate json Body with Schema\r",
+							"var valid_body = true;\r",
+							"jsonRes.forEach((order) => {\r",
+							"    try {\r",
+							"        pm.expect(order).to.have.jsonSchema(expected_schema);\r",
+							"    } catch (error) {\r",
+							"        valid_body = false;\r",
+							"        console.error(`Order validation failed: ${error.message}`);\r",
+							"        return;\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"TC_E_03 : Validate json Body with Schema\", () => {\r",
+							"    pm.expect(valid_body).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"// validation expected date between start and end date\r",
+							"const startDate = new Date(pm.collectionVariables.get(\"startDate\"));\r",
+							"const endDate = new Date(pm.collectionVariables.get(\"endDate\"));\r",
+							"\r",
+							"let isWithinRange = true;\r",
+							"\r",
+							"jsonRes.forEach((order) => {\r",
+							"        const orderDate = new Date(order.date);\r",
+							"        isWithinRange = orderDate >= startDate && orderDate <= endDate;\r",
+							"        if(!isWithinRange){\r",
+							"            return;\r",
+							"        }\r",
+							"});\r",
+							"\r",
+							"pm.test('TC_E_04 : Date is between start and end date', function () {\r",
+							"    pm.expect(isWithinRange).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "9f2d7575-609d-4046-915b-c6becb73e033",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "5c4399fc-a2f2-497b-a33c-899ea3f3cfe7",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}carts?startdate={{startDate}}&enddate={{endDate}}",
+					"host": [
+						"{{baseURL}}carts"
+					],
+					"query": [
+						{
+							"key": "startdate",
+							"value": "{{startDate}}"
+						},
+						{
+							"key": "enddate",
+							"value": "{{endDate}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User-Specific Cart Items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "047c89ef-95c2-41fa-bbf0-11a1003551b8",
+						"exec": [
+							"const expected_schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"id\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"userId\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"date\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"products\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"            \"productId\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            },\r",
+							"            \"quantity\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            }\r",
+							"          },\r",
+							"          \"required\": [\r",
+							"            \"productId\",\r",
+							"            \"quantity\"\r",
+							"          ]\r",
+							"        }\r",
+							"      ]\r",
+							"    },\r",
+							"    \"__v\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"id\",\r",
+							"    \"userId\",\r",
+							"    \"date\",\r",
+							"    \"products\",\r",
+							"    \"__v\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"// validate response code\r",
+							"pm.test('TC_F_01 : Status code is 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const jsonRes = pm.response.json();\r",
+							"\r",
+							"// validate empty body or not\r",
+							"pm.test('TC_F_02 : Response body is not empty', function () {\r",
+							"    pm.expect(jsonRes).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"// Validate json Body with Schema\r",
+							"var valid_body = true;\r",
+							"jsonRes.forEach((order) => {\r",
+							"    try {\r",
+							"        pm.expect(order).to.have.jsonSchema(expected_schema);\r",
+							"    } catch (error) {\r",
+							"        valid_body = false;\r",
+							"        console.error(`Order validation failed: ${error.message}`);\r",
+							"        return;\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"TC_F_03 : Validate json Body with Schema\", () => {\r",
+							"    pm.expect(valid_body).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// validate user ID\r",
+							"let validUserID = true;\r",
+							"const userID = Number(pm.collectionVariables.get(\"userIDProvided\")); \r",
+							"jsonRes.forEach((order) => {\r",
+							"    if (order.userId !== userID) {\r",
+							"        validUserID = false;\r",
+							"        return;\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test('TC_F_04 : Validate user ID', function () {\r",
+							"    pm.expect(validUserID).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1c1753ee-3eed-4d9a-9f99-e8307455520d",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "98323388-630d-4141-9a9c-ee182d7011f9",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{baseURL}}carts/user/{{userIDProvided}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Add to Cart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "449f34a9-b4f1-489e-bb1d-b7fb53b5dc25",
+						"exec": [
+							"const expected_schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"userId\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"date\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"products\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"            \"productId\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            },\r",
+							"            \"quantity\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            }\r",
+							"          },\r",
+							"          \"required\": [\r",
+							"            \"productId\",\r",
+							"            \"quantity\"\r",
+							"          ]\r",
+							"        }\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"userId\",\r",
+							"    \"date\",\r",
+							"    \"products\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"// validate response code\r",
+							"pm.test('TC_G_01 : Status code is 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const jsonRes = pm.response.json();\r",
+							"\r",
+							"// validate empty body or not\r",
+							"pm.test('TC_G_02 : Response body is not empty', function () {\r",
+							"    pm.expect(jsonRes).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"// Validate json Body with Schema\r",
+							"pm.test(\"TC_G_03 : Validate json Body with Schema\", () => {\r",
+							"    pm.expect(jsonRes).to.have.jsonSchema(expected_schema);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// validate json body data\r",
+							"pm.test('TC_G_04 : Validate json body data', () => {\r",
+							"    let addUserID = Number(pm.collectionVariables.get(\"add_user_id\"));\r",
+							"    let addDate = pm.collectionVariables.get(\"add_date\");\r",
+							"    let addProductID = Number(pm.collectionVariables.get(\"add_product_id\"));\r",
+							"    let addProductQty = Number(pm.collectionVariables.get(\"add_quantity\"));\r",
+							"\r",
+							"    console.log(\"User id = \" + addUserID);\r",
+							"    console.log(\"Date = \" + addDate);\r",
+							"    console.log(\"Product ID = \" + addProductID);\r",
+							"    console.log(\"Product Qty = \" + addProductQty);\r",
+							"\r",
+							"\r",
+							"    pm.expect(jsonRes.userId).to.equal(addUserID);\r",
+							"    pm.expect(jsonRes.date).to.equal(addDate);\r",
+							"    pm.expect(jsonRes.products[0].productId).to.equal(addProductID);\r",
+							"    pm.expect(jsonRes.products[0].quantity).to.equal(addProductQty);\r",
+							"    // Only check for __v if it's expected\r",
+							"    //pm.expect(jsonRes).to.have.property(\"__v\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// chaining cartID\r",
+							"pm.collectionVariables.set(\"new_cart_ID\",jsonRes.id);\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "541b1f0a-9d2c-4c37-acc0-4c90141ab4cb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "e081b022-4473-4716-bd10-48a1b595606b",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\":{{add_user_id}},\r\n    \"date\":\"{{add_date}}\",\r\n    \"products\":\r\n    [\r\n        {\r\n            \"productId\":{{add_product_id}},\r\n            \"quantity\":{{add_quantity}}\r\n        }\r\n    ],\r\n    \"__v\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseURL}}carts"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Cart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2cf677c8-454b-43c8-b9d2-bf9c85b16ba0",
+						"exec": [
+							"const expected_schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"userId\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"date\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"products\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"            \"productId\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            },\r",
+							"            \"quantity\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            }\r",
+							"          },\r",
+							"          \"required\": [\r",
+							"            \"productId\",\r",
+							"            \"quantity\"\r",
+							"          ]\r",
+							"        }\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"userId\",\r",
+							"    \"date\",\r",
+							"    \"products\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"// validate response code\r",
+							"pm.test('TC_H_01 : Status code is 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const jsonRes = pm.response.json();\r",
+							"\r",
+							"// validate empty body or not\r",
+							"pm.test('TC_H_02 : Response body is not empty', function () {\r",
+							"    pm.expect(jsonRes).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"// Validate json Body with Schema\r",
+							"pm.test(\"TC_H_03 : Validate json Body with Schema\", () => {\r",
+							"    pm.expect(jsonRes).to.have.jsonSchema(expected_schema);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// validate json body data\r",
+							"pm.test('TC_H_04 : Validate json body data', () => {\r",
+							"    pm.expect(jsonRes.userId).to.equal(Number(pm.collectionVariables.get(\"new_user_id\")));\r",
+							"    pm.expect(jsonRes.date).to.equal(pm.collectionVariables.get(\"add_date\"));\r",
+							"    pm.expect(jsonRes.products[0].productId).to.equal(Number(pm.collectionVariables.get(\"add_product_id\")));\r",
+							"    pm.expect(jsonRes.products[0].quantity).to.equal(Number(pm.collectionVariables.get(\"add_quantity\")));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c28ca7cf-76b9-4686-af28-dd187a710d77",
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "f9fb34fd-9be9-40f9-bb18-09702bc4478d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\":{{new_user_id}},\r\n    \"date\":\"{{add_date}}\",\r\n    \"products\":\r\n    [\r\n        {\r\n            \"productId\":{{add_product_id}},\r\n            \"quantity\":{{add_quantity}}\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseURL}}carts/{{new_cart_ID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Partial Update Cart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "09b27cdb-b292-48ba-af42-97be10b8cfd3",
+						"exec": [
+							"const expected_schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"userId\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"date\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"products\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"            \"productId\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            },\r",
+							"            \"quantity\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            }\r",
+							"          },\r",
+							"          \"required\": [\r",
+							"            \"productId\",\r",
+							"            \"quantity\"\r",
+							"          ]\r",
+							"        }\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"userId\",\r",
+							"    \"date\",\r",
+							"    \"products\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"// validate response code\r",
+							"pm.test('TC_I_01 : Status code is 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const jsonRes = pm.response.json();\r",
+							"\r",
+							"// validate empty body or not\r",
+							"pm.test('TC_I_02 : Response body is not empty', function () {\r",
+							"    pm.expect(jsonRes).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"// Validate json Body with Schema\r",
+							"pm.test(\"TC_I_03 : Validate json Body with Schema\", () => {\r",
+							"    pm.expect(jsonRes).to.have.jsonSchema(expected_schema);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// validate json body data\r",
+							"pm.test('TC_I_04 : Validate json body data', () => {\r",
+							"    pm.expect(jsonRes.products[0].productId).to.equal(Number(pm.collectionVariables.get(\"patch_product_id\")));\r",
+							"    pm.expect(jsonRes.products[0].quantity).to.equal(Number(pm.collectionVariables.get(\"patch_quantity\")));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// chaining latest updated product ID\r",
+							"pm.collectionVariables.set(\"latest_product_ID\", jsonRes.products[0].productId);\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "784becae-f8f0-46c6-b347-3fcdc773d8fa",
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "eb851edb-870d-400d-87fd-49a507b81a94",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\":{{add_user_id}},\r\n    \"date\":\"{{add_date}}\",\r\n    \"products\":\r\n    [\r\n        {\r\n            \"productId\":{{patch_product_id}},\r\n            \"quantity\":{{patch_quantity}}\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseURL}}carts/{{new_cart_ID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c6eccf84-de47-411d-bd68-ae344921e3be",
+						"exec": [
+							"const expected_schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"id\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"title\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"price\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"description\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"category\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"image\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"rating\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"rate\": {\r",
+							"          \"type\": \"number\"\r",
+							"        },\r",
+							"        \"count\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"rate\",\r",
+							"        \"count\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"id\",\r",
+							"    \"title\",\r",
+							"    \"price\",\r",
+							"    \"description\",\r",
+							"    \"category\",\r",
+							"    \"image\",\r",
+							"    \"rating\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"// validate response code\r",
+							"pm.test('TC_J_01 : Status code is 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const jsonRes = pm.response.json();\r",
+							"\r",
+							"// validate empty body or not\r",
+							"pm.test('TC_J_02 : Response body is not empty', function () {\r",
+							"    pm.expect(jsonRes).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"// Validate json Body with Schema\r",
+							"pm.test(\"TC_J_03 : Validate json Body with Schema\", () => {\r",
+							"    pm.expect(jsonRes).to.have.jsonSchema(expected_schema);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// validating product ID\r",
+							"pm.test(\"TC_J_04 : Validate product ID\", () => {\r",
+							"    pm.expect(jsonRes.id).to.equal(Number(pm.collectionVariables.get(\"latest_product_ID\")));\r",
+							"\r",
+							"})\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "51645286-2c8d-4dc3-a21e-a0ef250a92b0",
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "0a7d6c8e-d5f8-4482-9696-a10d567faa1f",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{baseURL}}products/{{latest_product_ID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Cart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "50ea6603-7e3e-4dc7-911b-65c4786b55e1",
+						"exec": [
+							"const expected_schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"userId\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"date\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"products\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"            \"productId\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            },\r",
+							"            \"quantity\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            }\r",
+							"          },\r",
+							"          \"required\": [\r",
+							"            \"productId\",\r",
+							"            \"quantity\"\r",
+							"          ]\r",
+							"        }\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"userId\",\r",
+							"    \"date\",\r",
+							"    \"products\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"// validate response code\r",
+							"pm.test('TC_K_01 : Status code is 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const jsonRes = pm.response.json();\r",
+							"\r",
+							"// validate empty body or not\r",
+							"pm.test('TC_K_02 : Response body is not empty', function () {\r",
+							"    pm.expect(jsonRes).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"// Validate json Body with Schema\r",
+							"pm.test(\"TC_K_03 : Validate json Body with Schema\", () => {\r",
+							"    pm.expect(jsonRes).to.have.jsonSchema(expected_schema);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// validate deleted cart ID\r",
+							"pm.test(\"TC_K_04 : Validate json Body cart ID\", ()=>{\r",
+							"    pm.expect(jsonRes.id).to.equal(Number(pm.collectionVariables.get(\"cartID\"))); \r",
+							"\r",
+							"})\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "54fec860-6e6a-4775-8000-65b027800cd7",
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "f059f2c5-3b69-4e63-926d-41ba8c5a6263",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "{{baseURL}}carts/{{cartID}}"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1db206d5-1b69-44ac-8b35-cac07f8e5a68",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "69c940a3-890f-4a68-9fe9-d78bfde313c9",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "cartID",
+			"value": "2",
+			"type": "string"
+		},
+		{
+			"key": "limitProvided",
+			"value": "2",
+			"type": "string"
+		},
+		{
+			"key": "sortOrder",
+			"value": "desc",
+			"type": "string"
+		},
+		{
+			"key": "startDate",
+			"value": "2020-01-01",
+			"type": "string"
+		},
+		{
+			"key": "endDate",
+			"value": "2020-01-30",
+			"type": "string"
+		},
+		{
+			"key": "userIDProvided",
+			"value": "2",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "add_date",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "add_user_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "add_product_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "add_quantity",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "new_cart_ID",
+			"value": ""
+		},
+		{
+			"key": "new_user_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "patch_product_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "patch_quantity",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "latest_product_ID",
+			"value": ""
+		}
+	]
+}
